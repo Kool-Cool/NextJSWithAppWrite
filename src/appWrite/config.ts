@@ -37,12 +37,52 @@ export class AppWriteService {
                 return userAccount
 
             }
-        } catch (error) {
+        } catch (error: any) {
             throw error
         }
     }
 
     async login( {email , password}:LoginUserAccount){
+        try {
+            return await appWriteAccount.createEmailPasswordSession(email, password)
+        } catch (error: any) {
+            throw error
 
+        }
     }
+
+    async isLoggedIn(): Promise<boolean> {
+
+        try {
+            const data = await this.getCurrentUser();
+            return Boolean(data)
+        } catch (error) {
+
+        }
+
+
+        return false
+    }
+
+    async getCurrentUser() {
+        try {
+            return appWriteAccount.get()
+        } catch (error: any) {
+            console.log("getCurrentUser error:  " + error);
+        }
+        return null
+    }
+
+    async logout() {
+        try {
+            return await appWriteAccount.deleteSession("current")
+        } catch (error) {
+            console.log("logout error:   " + error)
+        }
+    }
+
 }
+
+const appwriteService = new AppWriteService()
+
+export default appwriteService
